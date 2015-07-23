@@ -77,14 +77,13 @@ Point.prototype.render = function(ctx) {
 
 // Initialize something like 5 points
 var points = [];
-for ( var i = 0; i < 6; i++ ) {
-  var x = 80 + i*120 + Math.random() * 30.0;
+for ( var i = 0; i < 8; i++ ) {
+  var x = 40 + i*80 + Math.random() * 30.0;
   var y = 150 + Math.random() * 150.0;
 
   var p = new Point(x,y);
   points.push(p);
 }
-
 
 
 // Interpolate
@@ -173,6 +172,12 @@ canvas.addEventListener('mousemove', function(e) {
 
 });
 
+
+// Handle slider
+var slSmooth = document.getElementById('smoothness');
+slSmooth.addEventListener('change', function(e) {
+  smoothness = slSmooth.value / 100.0;
+});
 
 /**
  * Rendering main
