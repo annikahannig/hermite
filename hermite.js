@@ -30,15 +30,15 @@ Point.prototype.mul = function(s) {
  */
 Point.prototype.sub = function(p) {
   var self = this;
-  return new Point(self.x - p.x, self.y - p.y); 
+  return new Point(self.x - p.x, self.y - p.y);
 }
 
 /**
- * Point Addition 
+ * Point Addition
  */
 Point.prototype.add = function(p) {
   var self = this;
-  return new Point(self.x + p.x, self.y + p.y); 
+  return new Point(self.x + p.x, self.y + p.y);
 }
 
 
@@ -51,7 +51,7 @@ Point.prototype.intersects = function(x, y) {
 
   if ( Math.abs(x - self.x) < r &&
        Math.abs(y - self.y) < r ) {
-         return true;      
+         return true;
   }
   return false;
 }
@@ -130,7 +130,7 @@ var Curve = function(i, j, t) {
           CRS(points, i).mul(H3(t))).add(
           CRS(points, j).mul(H4(t)))
 
-  return p; 
+  return p;
 }
 
 // Draw interpolation
