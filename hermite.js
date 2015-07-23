@@ -148,15 +148,23 @@ function getMousePos(evt) {
  */
 
 var mouseDown = false;
+var selectedPoint = null;
 
-canvas.addEventListener('mouseup',   function() { mouseDown = false; } );
+canvas.addEventListener('mouseup',   function() {
+  mouseDown = false;
+  selectedPoint = null;
+});
 canvas.addEventListener('mousedown', function() { mouseDown = true;  } );
-
 canvas.addEventListener('mousemove', function(e) {
   var pos = getMousePos(e);
-  var selectedPoint = null;
-  
+
+  if ( selectedPoint && mouseDown ) {
+    selectedPoint.x = pos.x; selectedPoint.y = pos.y;
+    return;
+  }
+
   // Render points
+  selectedPoint = null;
   for ( var i in points ) {
     var p = points[i];
     if ( p.intersects(pos.x, pos.y) ) {
@@ -165,11 +173,6 @@ canvas.addEventListener('mousemove', function(e) {
     }
   }
   
-  if ( selectedPoint && mouseDown ) {
-    p.x = pos.x; p.y = pos.y;
-  }
-
-
 });
 
 
