@@ -113,7 +113,7 @@ var H4 = function(s) {
 
 // Use the Catmull-Rom spline to get the first derivate for
 // a given point
-var CRS = function(points, i) {
+var CRS = function(points, i, k) {
   if ( i == 0 ) {
     return new Point(0,0);
   }
@@ -121,20 +121,21 @@ var CRS = function(points, i) {
   if ( i >= points.length - 1 ) {
     return new Point(0,0);
   }
-  return points[i + 1].sub(points[i - 1]).mul(0.5);
+  return points[i + 1].sub(points[i - 1]).mul(k);
 }
 
-var Curve = function(i, j, t) {
+var Curve = function(i, j, k, t) {
   var p = points[i].mul(H1(t)).add(
           points[j].mul(H2(t))).add(
-          CRS(points, i).mul(H3(t))).add(
-          CRS(points, j).mul(H4(t)))
+          CRS(points, i, k).mul(H3(t))).add(
+          CRS(points, j, k).mul(H4(t)))
 
   return p;
 }
 
 // Draw interpolation
 var steps = 25;
+var smoothness = 0.5;
 
 ctx.strokeStyle = '#333333';
 ctx.beginPath();
@@ -142,7 +143,7 @@ ctx.moveTo(points[0].x, points[0].y);
 for ( var i = 0; i < points.length - 1; i++ ) {
   for( var j = 0; j < steps; j++ ) {
     var s = j / steps;
-    var p = Curve(i, i + 1, s);
+    var p = Curve(i, i + 1, smoothness, s);
     ctx.lineTo(p.x, p.y);
   }
 }
