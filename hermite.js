@@ -47,7 +47,7 @@ Point.prototype.add = function(p) {
  */
 Point.prototype.intersects = function(x, y) {
   var self = this;
-  var r    = 6.0;
+  var r    = 25.0;
 
   if ( Math.abs(x - self.x) < r &&
        Math.abs(y - self.y) < r ) {
@@ -86,11 +86,6 @@ for ( var i = 0; i < 6; i++ ) {
 }
 
 
-// Render points
-for ( var i in points ) {
-  var p = points[i];
-  p.render(ctx);
-}
 
 // Interpolate
 
@@ -137,15 +132,74 @@ var Curve = function(i, j, k, t) {
 var steps = 25;
 var smoothness = 0.5;
 
-ctx.strokeStyle = '#333333';
-ctx.beginPath();
-ctx.moveTo(points[0].x, points[0].y);
-for ( var i = 0; i < points.length - 1; i++ ) {
-  for( var j = 0; j < steps; j++ ) {
-    var s = j / steps;
-    var p = Curve(i, i + 1, smoothness, s);
-    ctx.lineTo(p.x, p.y);
-  }
-}
-ctx.stroke();
 
+/**
+ * Helper
+ */
+function getMousePos(evt) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
+/**
+ * Handle mouse input
+ */
+
+var mouseDown = false;
+
+canvas.addEventListener('mouseup',   function() { mouseDown = false; } );
+canvas.addEventListener('mousedown', function() { mouseDown = true;  } );
+
+canvas.addEventListener('mousemove', function(e) {
+  var pos = getMousePos(e);
+  var selectedPoint = null;
+  
+  // Render points
+  for ( var i in points ) {
+    var p = points[i];
+    if ( p.intersects(pos.x, pos.y) ) {
+      selectedPoint = p;
+      break;
+    }
+  }
+  
+  if ( selectedPoint && mouseDown ) {
+    p.x = pos.x; p.y = pos.y;
+  }
+
+
+});
+
+
+/**
+ * Rendering main
+ */
+function render(ev) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Render points
+  for ( var i in points ) {
+    var p = points[i];
+    p.render(ctx);
+  }
+
+  // Render curve
+  ctx.strokeStyle = '#333333';
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for ( var i = 0; i < points.length - 1; i++ ) {
+    for( var j = 0; j < steps; j++ ) {
+      var s = j / steps;
+      var p = Curve(i, i + 1, smoothness, s);
+      ctx.lineTo(p.x, p.y);
+    }
+  }
+  ctx.stroke();
+  requestAnimationFrame(render);
+}
+
+
+requestAnimationFrame(render);
